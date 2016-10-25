@@ -41,19 +41,19 @@ static int rtl92du_init_sw_vars(struct ieee80211_hw *hw)
 	rtlpriv->rtlhal.pfirmware = vzalloc(0x4000);
 	if (!rtlpriv->rtlhal.pfirmware) {
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
-			 "Can't alloc buffer for fw\n");
+			"Can't alloc buffer for fw\n");
 		return 1;
 	}
 #ifdef CONFIG_WOWLAN
-  rtlpriv->cfg->fw_name = "rtlwifi/rtl8192dufw_wol.bin";
+	rtlpriv->cfg->fw_name = "rtlwifi/rtl8192dufw_wol.bin";
 #else
-  rtlpriv->cfg->fw_name = "rtlwifi/rtl8192dufw.bin";
+	rtlpriv->cfg->fw_name = "rtlwifi/rtl8192dufw.bin";
 #endif /* CONFIG_WOWLAN */
 
-  rtlpriv->max_fw_size = 0x4000;
+	rtlpriv->max_fw_size = 0x4000;
 	err = request_firmware_nowait(THIS_MODULE, 1,
-				      rtlpriv->cfg->fw_name, rtlpriv->io.dev,
-				      GFP_KERNEL, hw, rtl_fw_cb);
+		rtlpriv->cfg->fw_name, rtlpriv->io.dev,
+		GFP_KERNEL, hw, rtl_fw_cb);
 	return err;
 }
 
@@ -118,8 +118,8 @@ static struct rtl_hal_ops rtl8192du_hal_ops = {
 };
 
 static struct rtl_mod_params rtl92du_mod_params = {
-    .sw_crypto = 0,
-    .debug = DBG_EMERG,
+	.sw_crypto = 0,
+	.debug = DBG_EMERG,
 };
 
 module_param_named(swenc, rtl92du_mod_params.sw_crypto, bool, 0444);
@@ -128,19 +128,19 @@ MODULE_PARM_DESC(swenc, "Set to 1 for software crypto (default 0)\n");
 MODULE_PARM_DESC(debug, "Set debug level (0-5) (default 0)");
 
 static struct rtl_hal_usbint_cfg rtl92du_interface_cfg = {
-    /* rx */
-    .in_ep_num = RTL92D_USB_BULK_IN_NUM,
-    .rx_urb_num = RTL92C_NUM_RX_URBS,
-    .rx_max_size = RTL92C_SIZE_MAX_RX_BUFFER,
-    .usb_rx_hdl = rtl8192du_rx_hdl,
-    .usb_rx_segregate_hdl = NULL, /* rtl8192c_rx_segregate_hdl; */
-    /* tx */
-    .usb_tx_cleanup = rtl8192c_tx_cleanup,
-    .usb_tx_post_hdl = rtl8192c_tx_post_hdl,
-    .usb_tx_aggregate_hdl = rtl8192c_tx_aggregate_hdl,
-    /* endpoint mapping */
-    .usb_endpoint_mapping = rtl8192cu_endpoint_mapping,
-    .usb_mq_to_hwq = rtl8192cu_mq_to_hwq,
+	/* rx */
+	.in_ep_num = RTL92D_USB_BULK_IN_NUM,
+	.rx_urb_num = RTL92C_NUM_RX_URBS,
+	.rx_max_size = RTL92C_SIZE_MAX_RX_BUFFER,
+	.usb_rx_hdl = rtl8192cu_rx_hdl,
+	.usb_rx_segregate_hdl = NULL, /* rtl8192c_rx_segregate_hdl; */
+								  /* tx */
+	.usb_tx_cleanup = rtl8192c_tx_cleanup,
+	.usb_tx_post_hdl = rtl8192c_tx_post_hdl,
+	.usb_tx_aggregate_hdl = rtl8192c_tx_aggregate_hdl,
+	/* endpoint mapping */
+	.usb_endpoint_mapping = rtl8192cu_endpoint_mapping,
+	.usb_mq_to_hwq = rtl8192cu_mq_to_hwq,
 };
 
 static struct rtl_hal_cfg rtl92du_hal_cfg = {
@@ -148,7 +148,7 @@ static struct rtl_hal_cfg rtl92du_hal_cfg = {
 	.fw_name = "rtlwifi/rtl8192dufw.bin",
 	.ops = &rtl8192du_hal_ops,
 	.mod_params = &rtl92du_mod_params,
-  .usb_interface_cfg = &rtl92du_interface_cfg,
+	.usb_interface_cfg = &rtl92du_interface_cfg,
 
 	.maps[SYS_ISO_CTRL] = REG_SYS_ISO_CTRL,
 	.maps[SYS_FUNC_EN] = REG_SYS_FUNC_EN,
@@ -238,43 +238,43 @@ static struct usb_device_id rtl8192d_usb_ids[] = {
 
 	/*=== Realtek demoboard ===*/
 	/****** 8192DU ********/
-  {RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8193, rtl92du_hal_cfg)},/* 8192DU-VC */
-  {RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8194, rtl92du_hal_cfg)},/* 8192DU-VS */
-  {RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8111, rtl92du_hal_cfg)},/* Realtek 5G dongle for WiFi Display */
-  {RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x0193, rtl92du_hal_cfg)},/* 8192DE-VAU */
-  {RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8171, rtl92du_hal_cfg)},/* 8192DU-VC */
+	{ RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8193, rtl92du_hal_cfg) },/* 8192DU-VC */
+	{ RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8194, rtl92du_hal_cfg) },/* 8192DU-VS */
+	{ RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8111, rtl92du_hal_cfg) },/* Realtek 5G dongle for WiFi Display */
+	{ RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x0193, rtl92du_hal_cfg) },/* 8192DE-VAU */
+	{ RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8171, rtl92du_hal_cfg) },/* 8192DU-VC */
 
-  /*=== Customer ID ===*/
-  /****** 8192DU-VC ********/
-  {RTL_USB_DEVICE(0x2019, 0xAB2C, rtl92du_hal_cfg)},/* PCI - Abocm */
-  {RTL_USB_DEVICE(0x2019, 0x4903, rtl92du_hal_cfg)},/* PCI - ETOP */
-  {RTL_USB_DEVICE(0x2019, 0x4904, rtl92du_hal_cfg)},/* PCI - ETOP */
-  {RTL_USB_DEVICE(0x07B8, 0x8193, rtl92du_hal_cfg)},/* Abocom - Abocom */
+																	   /*=== Customer ID ===*/
+																	   /****** 8192DU-VC ********/
+	{ RTL_USB_DEVICE(0x2019, 0xAB2C, rtl92du_hal_cfg) },/* PCI - Abocm */
+	{ RTL_USB_DEVICE(0x2019, 0x4903, rtl92du_hal_cfg) },/* PCI - ETOP */
+	{ RTL_USB_DEVICE(0x2019, 0x4904, rtl92du_hal_cfg) },/* PCI - ETOP */
+	{ RTL_USB_DEVICE(0x07B8, 0x8193, rtl92du_hal_cfg) },/* Abocom - Abocom */
 
-  /****** 8192DU-VS ********/
-  {RTL_USB_DEVICE(0x20F4, 0x664B, rtl92du_hal_cfg)}, /* TRENDnet - Cameo */
-  {RTL_USB_DEVICE(0x04DD, 0x954F, rtl92du_hal_cfg)},  /* Sharp */
-  {RTL_USB_DEVICE(0x04DD, 0x96A6, rtl92du_hal_cfg)},  /* Sharp */
-  {RTL_USB_DEVICE(0x050D, 0x110A, rtl92du_hal_cfg)}, /* Belkin - Edimax */
-  {RTL_USB_DEVICE(0x050D, 0x1105, rtl92du_hal_cfg)}, /* Belkin - Edimax */
-  {RTL_USB_DEVICE(0x050D, 0x120A, rtl92du_hal_cfg)}, /* Belkin - Edimax */
-  {RTL_USB_DEVICE(0x1668, 0x8102, rtl92du_hal_cfg)}, /*  -  */
-  {RTL_USB_DEVICE(0x0BDA, 0xE194, rtl92du_hal_cfg)}, /*  - Edimax */
+														/****** 8192DU-VS ********/
+	{ RTL_USB_DEVICE(0x20F4, 0x664B, rtl92du_hal_cfg) }, /* TRENDnet - Cameo */
+	{ RTL_USB_DEVICE(0x04DD, 0x954F, rtl92du_hal_cfg) },  /* Sharp */
+	{ RTL_USB_DEVICE(0x04DD, 0x96A6, rtl92du_hal_cfg) },  /* Sharp */
+	{ RTL_USB_DEVICE(0x050D, 0x110A, rtl92du_hal_cfg) }, /* Belkin - Edimax */
+	{ RTL_USB_DEVICE(0x050D, 0x1105, rtl92du_hal_cfg) }, /* Belkin - Edimax */
+	{ RTL_USB_DEVICE(0x050D, 0x120A, rtl92du_hal_cfg) }, /* Belkin - Edimax */
+	{ RTL_USB_DEVICE(0x1668, 0x8102, rtl92du_hal_cfg) }, /*  -  */
+	{ RTL_USB_DEVICE(0x0BDA, 0xE194, rtl92du_hal_cfg) }, /*  - Edimax */
 
-  /****** 8192DU-WiFi Display Dongle ********/
-  {RTL_USB_DEVICE(0x2019, 0xAB2D, rtl92du_hal_cfg)},/* Planex - Abocom ,5G dongle for WiFi Display */
+														 /****** 8192DU-WiFi Display Dongle ********/
+	{ RTL_USB_DEVICE(0x2019, 0xAB2D, rtl92du_hal_cfg) },/* Planex - Abocom ,5G dongle for WiFi Display */
 };
 
 static int rtl8192du_probe(struct usb_interface *intf,
-                           const struct usb_device_id *id){
-    return rtl_usb_probe(intf, id, &rtl92du_hal_cfg);
+	const struct usb_device_id *id) {
+	return rtl_usb_probe(intf, id, &rtl92du_hal_cfg);
 }
 
 static struct usb_driver rtl8192du_driver = {
-    .name = DEV_NAME,
-    .probe = rtl8192du_probe,
-    .disconnect = rtl_usb_disconnect,
-    .id_table = rtl8192d_usb_ids,
+	.name = DEV_NAME,
+	.probe = rtl8192du_probe,
+	.disconnect = rtl_usb_disconnect,
+	.id_table = rtl8192d_usb_ids,
 
-    .disable_hub_initiated_lpm = 1,
+	.disable_hub_initiated_lpm = 1,
 }
