@@ -132,11 +132,21 @@ void rtl92d_read_chip_version(struct ieee80211_hw *hw)
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 		 "Chip Version ID: %s\n", versionid);
 
-	if (IS_92D_SERIAL(rtlhal->version))
-		rtlphy->rf_type =
-			 (IS_92D_1T2R(rtlhal->version)) ? RF_1T2R : RF_2T2R;
-	else
-		rtlphy->rf_type = RF_1T1R;
+	if (IS_92D(rtlhal->version))
+      switch(GET_CVID_RF_TYPE(rtlhal->version)){
+      case RF_TYPE_1T1R:
+          rtlphy->rf_type = RF_1T1R;
+          break;
+      case RF_TYPE_1T2R:
+          rtlphy->rf_type = RF_1T2R;
+          break;
+      case RF_TYPE_2T2R:
+          rtlphy->rf_type = RF_2T2R;
+          break;
+      default:
+          rtlphy->rf_type = RF_1T1R;
+          break;
+      }
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD,
 		 "Chip RF Type: %s\n",
 		 rtlphy->rf_type == RF_2T2R ? "RF_2T2R" : "RF_1T1R");
