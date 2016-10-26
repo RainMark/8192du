@@ -57,7 +57,7 @@ static int rtl92du_init_sw_vars(struct ieee80211_hw *hw)
 	return err;
 }
 
-static void rtl92cu_deinit_sw_vars(struct ieee80211_hw *hw)
+static void rtl92du_deinit_sw_vars(struct ieee80211_hw *hw)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
@@ -130,17 +130,17 @@ MODULE_PARM_DESC(debug, "Set debug level (0-5) (default 0)");
 static struct rtl_hal_usbint_cfg rtl92du_interface_cfg = {
 	/* rx */
 	.in_ep_num = RTL92D_USB_BULK_IN_NUM,
-	.rx_urb_num = RTL92C_NUM_RX_URBS,
-	.rx_max_size = RTL92C_SIZE_MAX_RX_BUFFER,
-	.usb_rx_hdl = rtl8192cu_rx_hdl,
-	.usb_rx_segregate_hdl = NULL, /* rtl8192c_rx_segregate_hdl; */
+	.rx_urb_num = RTL92D_NUM_RX_URBS,
+	.rx_max_size = RTL92D_SIZE_MAX_RX_BUFFER,
+	.usb_rx_hdl = rtl8192du_rx_hdl,
+	.usb_rx_segregate_hdl = NULL, /* rtl8192d_rx_segregate_hdl; */
 								  /* tx */
-	.usb_tx_cleanup = rtl8192c_tx_cleanup,
-	.usb_tx_post_hdl = rtl8192c_tx_post_hdl,
-	.usb_tx_aggregate_hdl = rtl8192c_tx_aggregate_hdl,
+	.usb_tx_cleanup = rtl8192d_tx_cleanup,
+	.usb_tx_post_hdl = rtl8192d_tx_post_hdl,
+	.usb_tx_aggregate_hdl = rtl8192d_tx_aggregate_hdl,
 	/* endpoint mapping */
-	.usb_endpoint_mapping = rtl8192cu_endpoint_mapping,
-	.usb_mq_to_hwq = rtl8192cu_mq_to_hwq,
+	.usb_endpoint_mapping = rtl8192du_endpoint_mapping,
+	.usb_mq_to_hwq = rtl8192du_mq_to_hwq,
 };
 
 static struct rtl_hal_cfg rtl92du_hal_cfg = {

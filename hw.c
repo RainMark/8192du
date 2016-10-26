@@ -637,12 +637,13 @@ static void _rtl92du_gen_refresh_led_state(struct ieee80211_hw *hw)
 static bool _rtl92du_init_mac(struct ieee80211_hw *hw)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
+  u8 out_ep_numbers = rtlusb->out_ep_nums;
 	unsigned char bytetmp;
 	unsigned short wordtmp;
 	u16 retry;
 
-	rtl92d_phy_set_poweron(hw);
+	rtl92d_phy_set_poweron(hw); /* TODO */
 	/* Add for resume sequence of power domain according
 	 * to power document V11. Chapter V.11....  */
 	/* 0.   RSV_CTRL 0x1C[7:0] = 0x00  */
@@ -905,7 +906,6 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 	struct rtl_hal *rtlhal = rtl_hal(rtl_priv(hw));
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
 	struct rtl_phy *rtlphy = &(rtlpriv->phy);
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
 	bool rtstatus = true;
 	u8 tmp_u1b;
@@ -913,13 +913,12 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 	int err;
 	unsigned long flags;
 
-	rtlpci->being_init_adapter = true;
-	rtlpci->init_ready = false;
 	spin_lock_irqsave(&globalmutex_for_power_and_efuse, flags);
 	/* we should do iqk after disable/enable */
 	rtl92d_phy_reset_iqk_result(hw);
 	/* rtlpriv->intf_ops->disable_aspm(hw); */
-	rtstatus = _rtl92du_init_mac(hw);
+	rtlhal->hw_type = HARDWARE_TYPE_RTL8192DU;
+	rtstatus = _rtl92du_init_mac(hw); /* TODO */ 
 	if (!rtstatus) {
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG, "Init MAC failed\n");
 		err = 1;
@@ -966,8 +965,8 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 	 * rcr var here, or TP will unstable for receive_config
 	 * is wrong, RX RCR_ACRC32 will cause TP unstabel & Rx
 	 * RCR_APP_ICV will cause mac80211 unassoc for cisco 1252*/
-	rtlpci->receive_config = rtl_read_dword(rtlpriv, REG_RCR);
-	rtlpci->receive_config &= ~(RCR_ACRC32 | RCR_AICV);
+	/* rtlpci->receive_config = rtl_read_dword(rtlpriv, REG_RCR); */
+	/* rtlpci->receive_config &= ~(RCR_ACRC32 | RCR_AICV); */
 
 	rtl92d_phy_bb_config(hw);
 
@@ -1004,7 +1003,9 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 			      BIT(10), 3);
 	}
 
-	_rtl92du_hw_configure(hw);
+#if 0
+
+  _rtl92du_hw_configure(hw); /* TODO */
 
 	/* reset hw sec */
 	rtl_cam_reset_all_entry(hw);
@@ -1048,7 +1049,8 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 		}
 	}
 	rtlpci->init_ready = true;
-	return err;
+#endif
+  return err;
 }
 
 static enum version_8192d _rtl92du_read_chip_version(struct ieee80211_hw *hw)
@@ -1197,25 +1199,6 @@ void rtl92d_linked_set_reg(struct ieee80211_hw *hw)
 void rtl92du_set_qos(struct ieee80211_hw *hw, int aci)
 {
 	rtl92d_dm_init_edca_turbo(hw);
-}
-
-void rtl92du_enable_interrupt(struct ieee80211_hw *hw)
-{
-	struct rtl_priv *rtlpriv = rtl_priv(hw);
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
-
-	rtl_write_dword(rtlpriv, REG_HIMR, rtlpci->irq_mask[0] & 0xFFFFFFFF);
-	rtl_write_dword(rtlpriv, REG_HIMRE, rtlpci->irq_mask[1] & 0xFFFFFFFF);
-}
-
-void rtl92du_disable_interrupt(struct ieee80211_hw *hw)
-{
-	struct rtl_priv *rtlpriv = rtl_priv(hw);
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
-
-	rtl_write_dword(rtlpriv, REG_HIMR, IMR8190_DISABLED);
-	rtl_write_dword(rtlpriv, REG_HIMRE, IMR8190_DISABLED);
-	synchronize_irq(rtlpci->pdev->irq);
 }
 
 static void _rtl92du_poweroff_adapter(struct ieee80211_hw *hw)
