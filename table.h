@@ -37,6 +37,8 @@
 extern u32 rtl8192du_phy_reg_2tarray[PHY_REG_2T_ARRAYLENGTH];
 #define PHY_REG_ARRAY_PG_LENGTH 624
 extern u32 rtl8192du_phy_reg_array_pg[PHY_REG_ARRAY_PG_LENGTH];
+#define PHY_REG_ARRAY_MP_LENGTH 14
+extern u32 rtl8192du_phy_reg_array_mp[PHY_REG_ARRAY_MP_LENGTH];
 #define RADIOA_2T_ARRAYLENGTH 378
 extern u32 rtl8192du_radioa_2tarray[RADIOA_2T_ARRAYLENGTH];
 #define RADIOB_2T_ARRAYLENGTH 384

@@ -417,6 +417,16 @@ const u32 rtl8192du_phy_reg_array_pg[PHY_REG_ARRAY_PG_LENGTH] = {
 	0x868, 0xffffffff, 0x00000000,
 };
 
+const u32 rtl8192du_phy_reg_array_mp[PHY_REG_ARRAY_MP_LENGTH] = {
+	0xc64, 0x5116848b,
+	0xc30, 0x69e9ac4a,
+	0xd04, 0x80020403,
+	0xd14, 0x3333bc53,
+	0x840, 0x03cff456,
+	0x844, 0x03cff456,
+	0xc04, 0x03a07633,
+};
+
 const u32 rtl8192du_radioa_2tarray[RADIOA_2T_ARRAYLENGTH] = {
 	0x000, 0x00030000,
 	0x001, 0x00030000,
