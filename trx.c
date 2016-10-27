@@ -36,7 +36,7 @@
 #include "trx.h"
 #include "led.h"
 
-static u8 _rtl92de_map_hwqueue_to_fwqueue(struct sk_buff *skb, u8 hw_queue)
+static u8 _rtl92du_map_hwqueue_to_fwqueue(struct sk_buff *skb, u8 hw_queue)
 {
 	__le16 fc = rtl_get_fc(skb);
 
@@ -73,7 +73,7 @@ static u8 _rtl92d_evm_db_to_percentage(char value)
 	return ret_val;
 }
 
-static long _rtl92de_translate_todbm(struct ieee80211_hw *hw,
+static long _rtl92du_translate_todbm(struct ieee80211_hw *hw,
 				     u8 signal_strength_index)
 {
 	long signal_power;
@@ -83,7 +83,7 @@ static long _rtl92de_translate_todbm(struct ieee80211_hw *hw,
 	return signal_power;
 }
 
-static long _rtl92de_signal_scale_mapping(struct ieee80211_hw *hw, long currsig)
+static long _rtl92du_signal_scale_mapping(struct ieee80211_hw *hw, long currsig)
 {
 	long retsig;
 
@@ -110,7 +110,7 @@ static long _rtl92de_signal_scale_mapping(struct ieee80211_hw *hw, long currsig)
 	return retsig;
 }
 
-static void _rtl92de_query_rxphystatus(struct ieee80211_hw *hw,
+static void _rtl92du_query_rxphystatus(struct ieee80211_hw *hw,
 				       struct rtl_stats *pstats,
 				       struct rx_desc_92d *pdesc,
 				       struct rx_fwinfo_92d *p_drvinfo,
@@ -252,10 +252,10 @@ static void _rtl92de_query_rxphystatus(struct ieee80211_hw *hw,
 		}
 	}
 	if (is_cck_rate)
-		pstats->signalstrength = (u8)(_rtl92de_signal_scale_mapping(hw,
+		pstats->signalstrength = (u8)(_rtl92du_signal_scale_mapping(hw,
 				pwdb_all));
 	else if (rf_rx_num != 0)
-		pstats->signalstrength = (u8)(_rtl92de_signal_scale_mapping(hw,
+		pstats->signalstrength = (u8)(_rtl92du_signal_scale_mapping(hw,
 				total_rssi /= rf_rx_num));
 }
 
@@ -292,7 +292,7 @@ static void rtl92d_loop_over_paths(struct ieee80211_hw *hw,
 	}
 }
 
-static void _rtl92de_process_ui_rssi(struct ieee80211_hw *hw,
+static void _rtl92du_process_ui_rssi(struct ieee80211_hw *hw,
 				     struct rtl_stats *pstats)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -316,7 +316,7 @@ static void _rtl92de_process_ui_rssi(struct ieee80211_hw *hw,
 			rtlpriv->stats.ui_rssi.index = 0;
 		tmpval = rtlpriv->stats.ui_rssi.total_val /
 			rtlpriv->stats.ui_rssi.total_num;
-		rtlpriv->stats.signal_strength = _rtl92de_translate_todbm(hw,
+		rtlpriv->stats.signal_strength = _rtl92du_translate_todbm(hw,
 			(u8) tmpval);
 		pstats->rssi = rtlpriv->stats.signal_strength;
 	}
@@ -324,7 +324,7 @@ static void _rtl92de_process_ui_rssi(struct ieee80211_hw *hw,
 		rtl92d_loop_over_paths(hw, pstats);
 }
 
-static void _rtl92de_update_rxsignalstatistics(struct ieee80211_hw *hw,
+static void _rtl92du_update_rxsignalstatistics(struct ieee80211_hw *hw,
 					       struct rtl_stats *pstats)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -340,7 +340,7 @@ static void _rtl92de_update_rxsignalstatistics(struct ieee80211_hw *hw,
 		5 + pstats->recvsignalpower + weighting) / 6;
 }
 
-static void _rtl92de_process_pwdb(struct ieee80211_hw *hw,
+static void _rtl92du_process_pwdb(struct ieee80211_hw *hw,
 				  struct rtl_stats *pstats)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -367,7 +367,7 @@ static void _rtl92de_process_pwdb(struct ieee80211_hw *hw,
 			      (pstats->rx_pwdb_all)) / (RX_SMOOTH_FACTOR);
 		}
 		rtlpriv->dm.undec_sm_pwdb = undec_sm_pwdb;
-		_rtl92de_update_rxsignalstatistics(hw, pstats);
+		_rtl92du_update_rxsignalstatistics(hw, pstats);
 	}
 }
 
@@ -392,7 +392,7 @@ static void rtl92d_loop_over_streams(struct ieee80211_hw *hw,
 	}
 }
 
-static void _rtl92de_process_ui_link_quality(struct ieee80211_hw *hw,
+static void _rtl92du_process_ui_link_quality(struct ieee80211_hw *hw,
 					     struct rtl_stats *pstats)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -425,7 +425,7 @@ static void _rtl92de_process_ui_link_quality(struct ieee80211_hw *hw,
 	}
 }
 
-static void _rtl92de_process_phyinfo(struct ieee80211_hw *hw,
+static void _rtl92du_process_phyinfo(struct ieee80211_hw *hw,
 				     u8 *buffer,
 				     struct rtl_stats *pcurrent_stats)
 {
@@ -434,12 +434,12 @@ static void _rtl92de_process_phyinfo(struct ieee80211_hw *hw,
 	    !pcurrent_stats->packet_beacon)
 		return;
 
-	_rtl92de_process_ui_rssi(hw, pcurrent_stats);
-	_rtl92de_process_pwdb(hw, pcurrent_stats);
-	_rtl92de_process_ui_link_quality(hw, pcurrent_stats);
+	_rtl92du_process_ui_rssi(hw, pcurrent_stats);
+	_rtl92du_process_pwdb(hw, pcurrent_stats);
+	_rtl92du_process_ui_link_quality(hw, pcurrent_stats);
 }
 
-static void _rtl92de_translate_rx_signal_stuff(struct ieee80211_hw *hw,
+static void _rtl92du_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 					       struct sk_buff *skb,
 					       struct rtl_stats *pstats,
 					       struct rx_desc_92d *pdesc,
@@ -470,13 +470,13 @@ static void _rtl92de_translate_rx_signal_stuff(struct ieee80211_hw *hw,
 			ether_addr_equal(praddr, rtlefuse->dev_addr);
 	if (ieee80211_is_beacon(fc))
 		packet_beacon = true;
-	_rtl92de_query_rxphystatus(hw, pstats, pdesc, p_drvinfo,
+	_rtl92du_query_rxphystatus(hw, pstats, pdesc, p_drvinfo,
 				   packet_matchbssid, packet_toself,
 				   packet_beacon);
-	_rtl92de_process_phyinfo(hw, tmp_buf, pstats);
+	_rtl92du_process_phyinfo(hw, tmp_buf, pstats);
 }
 
-bool rtl92de_rx_query_desc(struct ieee80211_hw *hw,	struct rtl_stats *stats,
+bool rtl92du_rx_query_desc(struct ieee80211_hw *hw,	struct rtl_stats *stats,
 		struct ieee80211_rx_status *rx_status,
 		u8 *p_desc, struct sk_buff *skb)
 {
@@ -520,7 +520,7 @@ bool rtl92de_rx_query_desc(struct ieee80211_hw *hw,	struct rtl_stats *stats,
 	if (phystatus) {
 		p_drvinfo = (struct rx_fwinfo_92d *)(skb->data +
 						     stats->rx_bufshift);
-		_rtl92de_translate_rx_signal_stuff(hw,
+		_rtl92du_translate_rx_signal_stuff(hw,
 						   skb, stats, pdesc,
 						   p_drvinfo);
 	}
@@ -529,7 +529,7 @@ bool rtl92de_rx_query_desc(struct ieee80211_hw *hw,	struct rtl_stats *stats,
 	return true;
 }
 
-static void _rtl92de_insert_emcontent(struct rtl_tcb_desc *ptcb_desc,
+static void _rtl92du_insert_emcontent(struct rtl_tcb_desc *ptcb_desc,
 				      u8 *virtualaddress)
 {
 	memset(virtualaddress, 0, 8);
@@ -543,7 +543,7 @@ static void _rtl92de_insert_emcontent(struct rtl_tcb_desc *ptcb_desc,
 	SET_EARLYMODE_LEN4(virtualaddress, ptcb_desc->empkt_len[4]);
 }
 
-void rtl92de_tx_fill_desc(struct ieee80211_hw *hw,
+void rtl92du_tx_fill_desc(struct ieee80211_hw *hw,
 			  struct ieee80211_hdr *hdr, u8 *pdesc_tx,
 			  u8 *pbd_desc_tx, struct ieee80211_tx_info *info,
 			  struct ieee80211_sta *sta,
@@ -560,7 +560,7 @@ void rtl92de_tx_fill_desc(struct ieee80211_hw *hw,
 	__le16 fc = hdr->frame_control;
 	unsigned int buf_len = 0;
 	unsigned int skb_len = skb->len;
-	u8 fw_qsel = _rtl92de_map_hwqueue_to_fwqueue(skb, hw_queue);
+	u8 fw_qsel = _rtl92du_map_hwqueue_to_fwqueue(skb, hw_queue);
 	bool firstseg = ((hdr->seq_ctrl &
 			cpu_to_le16(IEEE80211_SCTL_FRAG)) == 0);
 	bool lastseg = ((hdr->frame_control &
@@ -604,7 +604,7 @@ void rtl92de_tx_fill_desc(struct ieee80211_hw *hw,
 				RT_TRACE(rtlpriv, COMP_SEND, DBG_LOUD,
 					 "Insert 8 byte.pTcb->EMPktNum:%d\n",
 					 ptcb_desc->empkt_num);
-				_rtl92de_insert_emcontent(ptcb_desc,
+				_rtl92du_insert_emcontent(ptcb_desc,
 							  (u8 *)(skb->data));
 			}
 		} else {
@@ -729,7 +729,7 @@ void rtl92de_tx_fill_desc(struct ieee80211_hw *hw,
 	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, "\n");
 }
 
-void rtl92de_tx_fill_cmddesc(struct ieee80211_hw *hw,
+void rtl92du_tx_fill_cmddesc(struct ieee80211_hw *hw,
 			     u8 *pdesc, bool firstseg,
 			     bool lastseg, struct sk_buff *skb)
 {
@@ -786,7 +786,7 @@ void rtl92de_tx_fill_cmddesc(struct ieee80211_hw *hw,
 	SET_TX_DESC_OWN(pdesc, 1);
 }
 
-void rtl92de_set_desc(struct ieee80211_hw *hw, u8 *pdesc, bool istx,
+void rtl92du_set_desc(struct ieee80211_hw *hw, u8 *pdesc, bool istx,
 		      u8 desc_name, u8 *val)
 {
 	if (istx) {
@@ -826,7 +826,7 @@ void rtl92de_set_desc(struct ieee80211_hw *hw, u8 *pdesc, bool istx,
 	}
 }
 
-u32 rtl92de_get_desc(u8 *p_desc, bool istx, u8 desc_name)
+u32 rtl92du_get_desc(u8 *p_desc, bool istx, u8 desc_name)
 {
 	u32 ret = 0;
 
@@ -861,7 +861,7 @@ u32 rtl92de_get_desc(u8 *p_desc, bool istx, u8 desc_name)
 	return ret;
 }
 
-void rtl92de_tx_polling(struct ieee80211_hw *hw, u8 hw_queue)
+void rtl92du_tx_polling(struct ieee80211_hw *hw, u8 hw_queue)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	if (hw_queue == BEACON_QUEUE)
