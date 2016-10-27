@@ -952,7 +952,7 @@ void rtl92d_phy_set_txpower_level(struct ieee80211_hw *hw, u8 channel)
 
 	if (!rtlefuse->txpwr_fromeprom)
 		return;
-	channel = _rtl92c_phy_get_rightchnlplace(channel);
+	channel = _rtl92d_phy_get_rightchnlplace(channel);
 	_rtl92d_get_txpower_index(hw, channel, &cckpowerlevel[0],
 		&ofdmpowerlevel[0]);
 	if (rtlpriv->rtlhal.current_bandtype == BAND_ON_2_4G)
@@ -2575,7 +2575,7 @@ static void _rtl92d_phy_lc_calibrate_sw(struct ieee80211_hw *hw, bool is2t)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_hal *rtlhal = &(rtlpriv->rtlhal);
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+	/* struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw)); */
 	u8 tmpreg, index, rf_mode[2];
 	u8 path = is2t ? 2 : 1;
 	u8 i;
@@ -2599,14 +2599,14 @@ static void _rtl92d_phy_lc_calibrate_sw(struct ieee80211_hw *hw, bool is2t)
 		/* 2. Set RF mode = standby mode */
 		rtl_set_rfreg(hw, (enum radio_path)index, RF_AC,
 			      RFREG_OFFSET_MASK, 0x010000);
-		if (rtlpci->init_ready) {
+		/* if (rtlpci->init_ready) { */
 			/* switch CV-curve control by LC-calibration */
 			rtl_set_rfreg(hw, (enum radio_path)index, RF_SYN_G7,
 				      BIT(17), 0x0);
 			/* 4. Set LC calibration begin */
 			rtl_set_rfreg(hw, (enum radio_path)index, RF_CHNLBW,
 				      0x08000, 0x01);
-		}
+		/* } */
 		u4tmp = rtl_get_rfreg(hw, (enum radio_path)index, RF_SYN_G6,
 				  RFREG_OFFSET_MASK);
 		while ((!(u4tmp & BIT(11))) && timecount <= timeout) {

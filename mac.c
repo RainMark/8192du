@@ -413,38 +413,38 @@ void rtl92d_disable_interrupt(struct ieee80211_hw *hw)
 
 void rtl92d_set_qos(struct ieee80211_hw *hw, int aci)
 {
-	struct rtl_priv *rtlpriv = rtl_priv(hw);
-	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
-	u32 u4b_ac_param;
+	/* struct rtl_priv *rtlpriv = rtl_priv(hw); */
+	/* struct rtl_mac *mac = rtl_mac(rtl_priv(hw)); */
+	/* u32 u4b_ac_param; */
 
 	rtl92d_dm_init_edca_turbo(hw);
-	u4b_ac_param = (u32) mac->ac[aci].aifs;
-	u4b_ac_param |=
-	    ((u32) le16_to_cpu(mac->ac[aci].cw_min) & 0xF) <<
-	    AC_PARAM_ECW_MIN_OFFSET;
-	u4b_ac_param |=
-	    ((u32) le16_to_cpu(mac->ac[aci].cw_max) & 0xF) <<
-	    AC_PARAM_ECW_MAX_OFFSET;
-	u4b_ac_param |= (u32) le16_to_cpu(mac->ac[aci].tx_op) <<
-			 AC_PARAM_TXOP_OFFSET;
-	RT_TRACE(rtlpriv, COMP_QOS, DBG_LOUD, "queue:%x, ac_param:%x\n",
-		 aci, u4b_ac_param);
-	switch (aci) {
-	case AC1_BK:
-		rtl_write_dword(rtlpriv, REG_EDCA_BK_PARAM, u4b_ac_param);
-		break;
-	case AC0_BE:
-		rtl_write_dword(rtlpriv, REG_EDCA_BE_PARAM, u4b_ac_param);
-		break;
-	case AC2_VI:
-		rtl_write_dword(rtlpriv, REG_EDCA_VI_PARAM, u4b_ac_param);
-		break;
-	case AC3_VO:
-		rtl_write_dword(rtlpriv, REG_EDCA_VO_PARAM, u4b_ac_param);
-		break;
-	default:
-		RT_ASSERT(false, "invalid aci: %d !\n", aci);
-		break;
+	/* u4b_ac_param = (u32) mac->ac[aci].aifs; */
+	/* u4b_ac_param |= */
+	/*     ((u32) le16_to_cpu(mac->ac[aci].cw_min) & 0xF) << */
+	/*     AC_PARAM_ECW_MIN_OFFSET; */
+	/* u4b_ac_param |= */
+	/*     ((u32) le16_to_cpu(mac->ac[aci].cw_max) & 0xF) << */
+	/*     AC_PARAM_ECW_MAX_OFFSET; */
+	/* u4b_ac_param |= (u32) le16_to_cpu(mac->ac[aci].tx_op) << */
+	/* 		 AC_PARAM_TXOP_OFFSET; */
+	/* RT_TRACE(rtlpriv, COMP_QOS, DBG_LOUD, "queue:%x, ac_param:%x\n", */
+	/* 	 aci, u4b_ac_param); */
+	/* switch (aci) { */
+	/* case AC1_BK: */
+	/* 	rtl_write_dword(rtlpriv, REG_EDCA_BK_PARAM, u4b_ac_param); */
+	/* 	break; */
+	/* case AC0_BE: */
+	/* 	rtl_write_dword(rtlpriv, REG_EDCA_BE_PARAM, u4b_ac_param); */
+	/* 	break; */
+	/* case AC2_VI: */
+	/* 	rtl_write_dword(rtlpriv, REG_EDCA_VI_PARAM, u4b_ac_param); */
+	/* 	break; */
+	/* case AC3_VO: */
+	/* 	rtl_write_dword(rtlpriv, REG_EDCA_VO_PARAM, u4b_ac_param); */
+	/* 	break; */
+	/* default: */
+	/* 	RT_ASSERT(false, "invalid aci: %d !\n", aci); */
+	/* 	break; */
 	}
 }
 

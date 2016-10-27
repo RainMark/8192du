@@ -424,8 +424,8 @@ bool rtl92d_phy_enable_anotherphy(struct ieee80211_hw *hw, bool bmac0)
 	if (!(u1btmp & mac_on_bit)) {
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD, "enable BB & RF\n");
 		/* Enable BB and RF power */
-		rtl92du_write_dword_dbi(hw, REG_SYS_ISO_CTRL,
-			rtl92du_read_dword_dbi(hw, REG_SYS_ISO_CTRL, direct) |
+		rtl92du_write_dword_dbi(hw, REG_SYS_ISO_CTRL,   /* TODO */
+			rtl92du_read_dword_dbi(hw, REG_SYS_ISO_CTRL, direct) | /* TODO */
 				BIT(29) | BIT(16) | BIT(17), direct);
 	} else {
 		/* We think if MAC1 is ON,then radio_a.txt
@@ -455,7 +455,7 @@ void rtl92d_phy_powerdown_anotherphy(struct ieee80211_hw *hw, bool bmac0)
 	if (!(u1btmp & mac_on_bit)) {
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD, "power down\n");
 		/* power down RF radio A according to YuNan's advice. */
-		rtl92du_write_dword_dbi(hw, RFPGA0_XA_LSSIPARAMETER,
+		rtl92du_write_dword_dbi(hw, RFPGA0_XA_LSSIPARAMETER, /* TODO */
 					0x00000000, direct);
 	}
 	RT_TRACE(rtlpriv, COMP_RF, DBG_LOUD, "<====\n");

@@ -68,12 +68,12 @@ void rtl92du_write_dword_dbi(struct ieee80211_hw *hw,
 static void _rtl92du_set_bcn_ctrl_reg(struct ieee80211_hw *hw,
 				      u8 set_bits, u8 clear_bits)
 {
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
-	rtlpci->reg_bcn_ctrl_val |= set_bits;
-	rtlpci->reg_bcn_ctrl_val &= ~clear_bits;
-	rtl_write_byte(rtlpriv, REG_BCN_CTRL, (u8) rtlpci->reg_bcn_ctrl_val);
+	rtlusb->reg_bcn_ctrl_val |= set_bits;
+	rtlusb->reg_bcn_ctrl_val &= ~clear_bits;
+	rtl_write_byte(rtlpriv, REG_BCN_CTRL, (u8) rtlusb->reg_bcn_ctrl_val);
 }
 
 static void _rtl92du_stop_tx_beacon(struct ieee80211_hw *hw)
@@ -1003,7 +1003,6 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 			      BIT(10), 3);
 	}
 
-#if 0
 
   _rtl92du_hw_configure(hw); /* TODO */
 
@@ -1024,7 +1023,7 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 	/* rtlpriv->intf_ops->enable_aspm(hw); */
 
 	rtl92d_dm_init(hw);
-	rtlpci->being_init_adapter = false;
+	/* rtlpci->being_init_adapter = false; */
 
 	if (ppsc->rfpwr_state == ERFON) {
 		rtl92d_phy_lc_calibrate(hw);
@@ -1043,13 +1042,12 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 			}
 			/* check that loop was successful. If not, exit now */
 			if (i == 10000) {
-				rtlpci->init_ready = false;
+				/* rtlpci->init_ready = false; */
 				return 1;
 			}
 		}
 	}
-	rtlpci->init_ready = true;
-#endif
+	/* rtlpci->init_ready = true; */
   return err;
 }
 
@@ -1289,7 +1287,7 @@ void rtl92du_card_disable(struct ieee80211_hw *hw)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_ps_ctl *ppsc = rtl_psc(rtl_priv(hw));
-	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
 	struct rtl_mac *mac = rtl_mac(rtl_priv(hw));
 	enum nl80211_iftype opmode;
 
@@ -1297,8 +1295,8 @@ void rtl92du_card_disable(struct ieee80211_hw *hw)
 	opmode = NL80211_IFTYPE_UNSPECIFIED;
 	_rtl92du_set_media_status(hw, opmode);
 
-	if (rtlpci->driver_is_goingto_unload ||
-	    ppsc->rfoff_reason > RF_CHANGE_BY_PS)
+	/* if (rtlpci->driver_is_goingto_unload || */
+	/*     ppsc->rfoff_reason > RF_CHANGE_BY_PS) */
 		rtlpriv->cfg->ops->led_control(hw, LED_CTL_POWER_OFF);
 	RT_SET_PS_LEVEL(ppsc, RT_RF_OFF_LEVL_HALT_NIC);
 	/* Power sequence for each MAC. */
@@ -1309,7 +1307,7 @@ void rtl92du_card_disable(struct ieee80211_hw *hw)
 	/* e.  reset MAC */
 
 	/* a. stop tx DMA */
-	rtl_write_byte(rtlpriv, REG_PCIE_CTRL_REG + 1, 0xFE);
+	rtl_write_byte(rtlpriv, REG_TXPAUSE, 0xFF);
 	udelay(50);
 
 	/* b. TXPAUSE 0x522[7:0] = 0xFF Pause MAC TX queue */
@@ -1337,8 +1335,8 @@ void rtl92du_card_disable(struct ieee80211_hw *hw)
 
 	/* d.  stop tx/rx dma before disable REG_CR (0x100) to fix */
 	/* dma hang issue when disable/enable device.  */
-	rtl_write_byte(rtlpriv, REG_PCIE_CTRL_REG + 1, 0xff);
-	udelay(50);
+	/* rtl_write_byte(rtlpriv, REG_PCIE_CTRL_REG + 1, 0xff); */
+	/* udelay(50); */
 	rtl_write_byte(rtlpriv, REG_CR, 0x0);
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD, "==> Do power off.......\n");
 	if (rtl92d_phy_check_poweroff(hw))
@@ -1361,6 +1359,34 @@ void rtl92du_interrupt_recognized(struct ieee80211_hw *hw,
 	 */
 }
 
+static void _InitBeaconParameters(struct ieee80211_hw *hw)
+{
+    struct rtl_priv *rtlpriv = rtl_priv(hw);
+    struct rtl_hal *rtlhal = rtl_hal(rtlpriv);
+
+    rtl_write_word(rtlpriv, REG_BCN_CTRL, 0x1010);
+
+    /* TODO: Remove these magic number */
+    rtl_write_word(rtlpriv, REG_TBTT_PROHIBIT, 0x6404);
+    rtl_write_byte(rtlpriv, REG_DRVERLYINT, DRIVER_EARLY_INT_TIME);
+    rtl_write_byte(rtlpriv, REG_BCNDMATIM, BCN_DMA_ATIME_INT_TIME);
+    /* Change beacon AIFS to the largest number
+     * beacause test chip does not contension before sending beacon. */
+    if (IS_NORMAL_CHIP(rtlhal->version))
+        rtl_write_word(rtlpriv, REG_BCNTCFG, 0x660F);
+    else
+        rtl_write_word(rtlpriv, REG_BCNTCFG, 0x66FF);
+}
+
+static void _beacon_function_enable(struct ieee80211_hw *hw, bool Enable,
+                                    bool Linked)
+{
+    struct rtl_priv *rtlpriv = rtl_priv(hw);
+
+    _rtl92du_set_bcn_ctrl_reg(hw, (BIT(4) | BIT(3) | BIT(1)), 0x00);
+    rtl_write_byte(rtlpriv, REG_RD_CTRL+1, 0x6F);
+}
+
 void rtl92du_set_beacon_related_registers(struct ieee80211_hw *hw)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
@@ -1372,13 +1398,38 @@ void rtl92du_set_beacon_related_registers(struct ieee80211_hw *hw)
 	/*rtl92du_disable_interrupt(hw);  */
 	rtl_write_word(rtlpriv, REG_ATIMWND, atim_window);
 	rtl_write_word(rtlpriv, REG_BCN_INTERVAL, bcn_interval);
-	rtl_write_word(rtlpriv, REG_BCNTCFG, 0x660f);
-	rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_CCK, 0x20);
-	if (rtlpriv->rtlhal.current_bandtype == BAND_ON_5G)
-		rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_OFDM, 0x30);
-	else
-		rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_OFDM, 0x20);
-	rtl_write_byte(rtlpriv, 0x606, 0x30);
+	/* rtl_write_word(rtlpriv, REG_BCNTCFG, 0x660f); */
+	/* rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_CCK, 0x20); */
+	/* if (rtlpriv->rtlhal.current_bandtype == BAND_ON_5G) */
+	/* 	rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_OFDM, 0x30); */
+	/* else */
+	/* 	rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_OFDM, 0x20); */
+	/* rtl_write_byte(rtlpriv, 0x606, 0x30); */
+	_InitBeaconParameters(hw);
+	rtl_write_byte(rtlpriv, REG_SLOT, 0x09);
+	/*
+	 * Force beacon frame transmission even after receiving beacon frame
+	 * from other ad hoc STA
+	 *
+	 *
+	 * Reset TSF Timer to zero, added by Roger. 2008.06.24
+	 */
+	value32 = rtl_read_dword(rtlpriv, REG_TCR);
+	value32 &= ~TSFRST;
+	rtl_write_dword(rtlpriv, REG_TCR, value32);
+	value32 |= TSFRST;
+	rtl_write_dword(rtlpriv, REG_TCR, value32);
+	RT_TRACE(rtlpriv, COMP_INIT|COMP_BEACON, DBG_LOUD,
+           "SetBeaconRelatedRegisters8192DUsb(): Set TCR(%x)\n",
+           value32);
+	/* TODO: Modify later (Find the right parameters)
+	 * NOTE: Fix test chip's bug (about contention windows's randomness) */
+	if ((mac->opmode == NL80211_IFTYPE_ADHOC) ||
+	    (mac->opmode == NL80211_IFTYPE_AP)) {
+      rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_CCK, 0x50);
+      rtl_write_byte(rtlpriv, REG_RXTSF_OFFSET_OFDM, 0x50);
+	}
+	_beacon_function_enable(hw, true, true);
 }
 
 void rtl92du_set_beacon_interval(struct ieee80211_hw *hw)
