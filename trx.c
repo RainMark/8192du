@@ -729,6 +729,30 @@ void rtl92du_tx_fill_desc(struct ieee80211_hw *hw,
 	RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE, "\n");
 }
 
+void rtl92du_fill_fake_txdesc(struct ieee80211_hw *hw, u8 * pDesc,
+                              u32 buffer_len, bool bIsPsPoll)
+{
+        /* Clear all status */
+        memset(pDesc, 0, RTL_TX_HEADER_SIZE);
+        SET_TX_DESC_FIRST_SEG(pDesc, 1); /* bFirstSeg; */
+        SET_TX_DESC_LAST_SEG(pDesc, 1); /* bLastSeg; */
+        SET_TX_DESC_OFFSET(pDesc, RTL_TX_HEADER_SIZE); /* Offset = 32 */
+        SET_TX_DESC_PKT_SIZE(pDesc, buffer_len); /* Buffer size + command hdr */
+        SET_TX_DESC_QUEUE_SEL(pDesc, QSLT_MGNT); /* Fixed queue of Mgnt queue */
+        /* Set NAVUSEHDR to prevent Ps-poll AId filed to be changed to error
+         * vlaue by Hw. */
+        if (bIsPsPoll) {
+                SET_TX_DESC_NAV_USE_HDR(pDesc, 1);
+        } else {
+                SET_TX_DESC_HWSEQ_EN(pDesc, 1); /* Hw set sequence number */
+                SET_TX_DESC_PKT_ID(pDesc, 0x100); /* set bit3 to 1. */
+        }
+        SET_TX_DESC_USE_RATE(pDesc, 1); /* use data rate which is set by Sw */
+        SET_TX_DESC_OWN(pDesc, 1);
+        SET_TX_DESC_TX_RATE(pDesc, DESC92_RATE1M);
+        _rtl_tx_desc_checksum(pDesc);
+}
+
 void rtl92du_tx_fill_cmddesc(struct ieee80211_hw *hw,
 			     u8 *pdesc, bool firstseg,
 			     bool lastseg, struct sk_buff *skb)

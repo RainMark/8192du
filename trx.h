@@ -743,6 +743,8 @@ void rtl92du_set_desc(struct ieee80211_hw *hw, u8 *pdesc, bool istx,
 		      u8 desc_name, u8 *val);
 u32 rtl92du_get_desc(u8 *pdesc, bool istx, u8 desc_name);
 void rtl92du_tx_polling(struct ieee80211_hw *hw, u8 hw_queue);
+void rtl92du_fill_fake_txdesc(struct ieee80211_hw *hw, u8 * pDesc,
+                              u32 buffer_len, bool bIsPsPoll);
 void rtl92du_tx_fill_cmddesc(struct ieee80211_hw *hw, u8 *pdesc,
 			     bool b_firstseg, bool b_lastseg,
 			     struct sk_buff *skb);
