@@ -145,9 +145,10 @@ void rtl92d_phy_set_txpower_level(struct ieee80211_hw *hw, u8 channel);
 void rtl92d_phy_set_bw_mode(struct ieee80211_hw *hw,
 			    enum nl80211_channel_type ch_type);
 u8 rtl92d_phy_sw_chnl(struct ieee80211_hw *hw);
-bool rtl92d_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
+bool _rtl92d_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 					  enum rf_content content,
 					  enum radio_path rfpath);
+bool _rtl92d_phy_config_bb_with_pgheaderfile(struct ieee80211_hw *hw, u8 configtype);
 bool rtl92d_phy_set_io_cmd(struct ieee80211_hw *hw, enum io_type iotype);
 bool rtl92d_phy_set_rf_power_state(struct ieee80211_hw *hw,
 				   enum rf_pwrstate rfpwr_state);

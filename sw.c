@@ -86,16 +86,16 @@ static struct rtl_hal_ops rtl8192du_hal_ops = {
 	.set_hw_reg = rtl92du_set_hw_reg, /* TODO: need more test */
 	.update_rate_tbl = rtl92du_update_hal_rate_tbl,
 	.fill_tx_desc = rtl92du_tx_fill_desc,
-	.fill_fake_txdesc = rtl92du_fill_fake_txdesc,
+	/* .fill_fake_txdesc = rtl92du_fill_fake_txdesc, */
 	.fill_tx_cmddesc = rtl92du_tx_fill_cmddesc,
-	.cmd_send_packet = rtl92du_cmd_send_packet,
+	/* .cmd_send_packet = rtl92du_cmd_send_packet, */
 	.query_rx_desc = rtl92du_rx_query_desc,
 	.set_channel_access = rtl92du_update_channel_access_setting,
 	.radio_onoff_checking = rtl92du_gpio_radio_on_off_checking,
 	.set_bw_mode = rtl92d_phy_set_bw_mode,
 	.switch_channel = rtl92d_phy_sw_chnl,
 	.dm_watchdog = rtl92d_dm_watchdog,
-	.scan_operation_backup = rtl_phy_scan_operation_backup,
+	/* .scan_operation_backup = rtl_phy_scan_operation_backup, */
 	.set_rf_power_state = rtl92du_phy_set_rf_power_state,
 	.led_control = rtl92du_led_control,
 	.enable_hw_sec = rtl92du_enable_hw_security_config,
@@ -104,16 +104,16 @@ static struct rtl_hal_ops rtl8192du_hal_ops = {
 	.deinit_sw_leds = rtl92du_deinit_sw_leds,
 	.get_bbreg = rtl92d_phy_query_bb_reg,
 	.set_bbreg = rtl92d_phy_set_bb_reg,
-	.get_rfreg = rtl92du_phy_query_rf_reg,
-	.set_rfreg = rtl92du_phy_set_rf_reg,
-	.phy_rf6052_config = rtl92du_phy_rf6052_config,
-	.phy_rf6052_set_cck_txpower = rtl92du_phy_rf6052_set_cck_txpower,
-	.phy_rf6052_set_ofdm_txpower = rtl92du_phy_rf6052_set_ofdm_txpower,
-	.config_bb_with_headerfile = _rtl92du_phy_config_bb_with_headerfile,
-	.config_bb_with_pgheaderfile = _rtl92du_phy_config_bb_with_pgheaderfile,
-	.phy_lc_calibrate = _rtl92du_phy_lc_calibrate,
-	.phy_set_bw_mode_callback = rtl92du_phy_set_bw_mode_callback,
-	.dm_dynamic_txpower = rtl92du_dm_dynamic_txpower,
+	/* .get_rfreg = rtl92du_phy_query_rf_reg, */
+	/* .set_rfreg = rtl92du_phy_set_rf_reg, */
+	/* .phy_rf6052_config = rtl92du_phy_rf6052_config, */
+	/* .phy_rf6052_set_cck_txpower = rtl92du_phy_rf6052_set_cck_txpower, */
+	/* .phy_rf6052_set_ofdm_txpower = rtl92du_phy_rf6052_set_ofdm_txpower, */
+	/* .config_bb_with_headerfile = _rtl92du_phy_config_bb_with_headerfile, */
+	/* .config_bb_with_pgheaderfile = _rtl92du_phy_config_bb_with_pgheaderfile, */
+	/* .phy_lc_calibrate = _rtl92du_phy_lc_calibrate, */
+	/* .phy_set_bw_mode_callback = rtl92du_phy_set_bw_mode_callback, */
+	/* .dm_dynamic_txpower = rtl92du_dm_dynamic_txpower, */
 	.fill_h2c_cmd = rtl92d_fill_h2c_cmd,
 };
 
@@ -130,17 +130,17 @@ MODULE_PARM_DESC(debug, "Set debug level (0-5) (default 0)");
 static struct rtl_hal_usbint_cfg rtl92du_interface_cfg = {
 	/* rx */
 	.in_ep_num = RTL92D_USB_BULK_IN_NUM,
-	.rx_urb_num = RTL92D_NUM_RX_URBS,
-	.rx_max_size = RTL92D_SIZE_MAX_RX_BUFFER,
-	.usb_rx_hdl = rtl8192du_rx_hdl,
+	/* .rx_urb_num = RTL92D_NUM_RX_URBS, */
+	/* .rx_max_size = RTL92D_SIZE_MAX_RX_BUFFER, */
+	/* .usb_rx_hdl = rtl8192du_rx_hdl, */
 	.usb_rx_segregate_hdl = NULL, /* rtl8192d_rx_segregate_hdl; */
 								  /* tx */
-	.usb_tx_cleanup = rtl8192d_tx_cleanup,
-	.usb_tx_post_hdl = rtl8192d_tx_post_hdl,
-	.usb_tx_aggregate_hdl = rtl8192d_tx_aggregate_hdl,
+	/* .usb_tx_cleanup = rtl8192d_tx_cleanup, */
+	/* .usb_tx_post_hdl = rtl8192d_tx_post_hdl, */
+	/* .usb_tx_aggregate_hdl = rtl8192d_tx_aggregate_hdl, */
 	/* endpoint mapping */
-	.usb_endpoint_mapping = rtl8192du_endpoint_mapping,
-	.usb_mq_to_hwq = rtl8192du_mq_to_hwq,
+	/* .usb_endpoint_mapping = rtl8192du_endpoint_mapping, */
+	/* .usb_mq_to_hwq = rtl8192du_mq_to_hwq, */
 };
 
 static struct rtl_hal_cfg rtl92du_hal_cfg = {
@@ -168,8 +168,8 @@ static struct rtl_hal_cfg rtl92du_hal_cfg = {
 	.maps[EFUSE_LOADER_CLK_EN] = LOADER_CLK_EN,
 	.maps[EFUSE_ANA8M] = 0,	/* just for 92se */
 	.maps[EFUSE_HWSET_MAX_SIZE] = HWSET_MAX_SIZE,
-	.maps[EFUSE_MAX_SECTION_MAP] = EFUSE_MAX_SECTION,
-	.maps[EFUSE_REAL_CONTENT_SIZE] = EFUSE_REAL_CONTENT_LEN,
+	/* .maps[EFUSE_MAX_SECTION_MAP] = EFUSE_MAX_SECTION, */
+	/* .maps[EFUSE_REAL_CONTENT_SIZE] = EFUSE_REAL_CONTENT_LEN, */
 
 	.maps[RWCAM] = REG_CAMCMD,
 	.maps[WCAMI] = REG_CAMWRITE,
@@ -217,6 +217,7 @@ static struct rtl_hal_cfg rtl92du_hal_cfg = {
 	.maps[RTL_IMR_ROK] = IMR_ROK,
 	.maps[RTL_IBSS_INT_MASKS] = (IMR_BCNINT | IMR_TBDOK | IMR_TBDER),
 
+	/* NO Macro */
 	.maps[RTL_RC_CCK_RATE1M] = DESC92_RATE1M,
 	.maps[RTL_RC_CCK_RATE2M] = DESC92_RATE2M,
 	.maps[RTL_RC_CCK_RATE5_5M] = DESC92_RATE5_5M,
@@ -273,7 +274,7 @@ static int rtl8192du_probe(struct usb_interface *intf,
 static struct usb_driver rtl8192du_driver = {
 	.name = DEV_NAME,
 	.probe = rtl8192du_probe,
-	.disconnect = rtl_usb_disconnect,
+	/* .disconnect = rtl_usb_disconnect, */
 	.id_table = rtl8192d_usb_ids,
 
 	.disable_hub_initiated_lpm = 1,
