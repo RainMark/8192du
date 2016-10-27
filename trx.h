@@ -27,8 +27,8 @@
  *
  *****************************************************************************/
 
-#ifndef __RTL92DE_TRX_H__
-#define __RTL92DE_TRX_H__
+#ifndef __RTL92DU_TRX_H__
+#define __RTL92DU_TRX_H__
 
 #define TX_DESC_SIZE				64
 #define TX_DESC_AGGR_SUBFRAME_SIZE		32

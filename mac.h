@@ -31,8 +31,8 @@
 #define __RTL92D_MAC_H__
 
 #define LLT_LAST_ENTRY_OF_TX_PKT_BUFFER		255
-#define DRIVER_EARLY_INT_TIME					0x05
-#define BCN_DMA_ATIME_INT_TIME				0x02
+#define DRIVER_EARLY_INT_TIME			0x05
+#define BCN_DMA_ATIME_INT_TIME			0x02
 
 void rtl92d_read_chip_version(struct ieee80211_hw *hw);
 bool rtl92d_llt_write(struct ieee80211_hw *hw, u32 address, u32 data);

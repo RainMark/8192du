@@ -1113,7 +1113,7 @@ int rtl92du_hw_init(struct ieee80211_hw *hw)
 	}
 
 
-  _rtl92du_hw_configure(hw); /* TODO */
+	_rtl92du_hw_configure(hw); /* TODO */
 
 	/* reset hw sec */
 	rtl_cam_reset_all_entry(hw);

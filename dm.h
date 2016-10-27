@@ -27,8 +27,8 @@
  *
  *****************************************************************************/
 
-#ifndef	__RTL92C_DM_H__
-#define __RTL92C_DM_H__
+#ifndef	__RTL92D_DM_H__
+#define __RTL92D_DM_H__
 
 #define HAL_DM_DIG_DISABLE			BIT(0)
 #define HAL_DM_HIPWR_DISABLE			BIT(1)
