@@ -138,7 +138,7 @@ void rtl92d_phy_set_rf_reg(struct ieee80211_hw *hw,
 bool rtl92d_phy_mac_config(struct ieee80211_hw *hw);
 bool rtl92d_phy_bb_config(struct ieee80211_hw *hw);
 bool rtl92d_phy_rf_config(struct ieee80211_hw *hw);
-bool rtl92c_phy_config_rf_with_feaderfile(struct ieee80211_hw *hw,
+bool rtl92d_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 					  enum radio_path rfpath);
 void rtl92d_phy_get_hw_reg_originalvalue(struct ieee80211_hw *hw);
 void rtl92d_phy_set_txpower_level(struct ieee80211_hw *hw, u8 channel);

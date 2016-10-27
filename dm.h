@@ -157,5 +157,6 @@ void rtl92d_dm_init_edca_turbo(struct ieee80211_hw *hw);
 void rtl92d_dm_write_dig(struct ieee80211_hw *hw);
 void rtl92d_dm_check_txpower_tracking_thermal_meter(struct ieee80211_hw *hw);
 void rtl92d_dm_init_rate_adaptive_mask(struct ieee80211_hw *hw);
+void rtl92d_dm_dynamic_txpower(struct ieee80211_hw *hw);
 
 #endif
